@@ -15,7 +15,7 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.yourapp.rfid/deviceapi")
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.eample.rfid/deviceapi")
         .setMethodCallHandler { call, result ->
             when (call.method) {
                 "initReader" -> {
