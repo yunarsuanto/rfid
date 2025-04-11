@@ -7,7 +7,7 @@ import com.rscja.deviceapi.exception.ConfigurationException
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import com.example.rfid.DeviceApi
+import com.example.rfid.MyRFIDDeviceApi
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.example.rfid/deviceapi"
@@ -19,15 +19,15 @@ class MainActivity : FlutterActivity() {
         .setMethodCallHandler { call, result ->
             when (call.method) {
                 "initReader" -> {
-                    val ok = DeviceApi.initReader(this)
+                    val ok = MyRFIDDeviceApi.initReader(this)
                     result.success(ok)
                 }
                 "readTag" -> {
-                    val tag = DeviceApi.readTag()
+                    val tag = MyRFIDDeviceApi.readTag()
                     result.success(tag)
                 }
                 "freeReader" -> {
-                    val ok = DeviceApi.freeReader()
+                    val ok = MyRFIDDeviceApi.freeReader()
                     result.success(ok)
                 }
                 else -> result.notImplemented()

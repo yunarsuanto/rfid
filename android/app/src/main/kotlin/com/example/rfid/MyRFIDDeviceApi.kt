@@ -6,7 +6,7 @@ import com.rscja.deviceapi.RFIDWithUHFUART
 import com.rscja.deviceapi.entity.UHFTAGInfo
 import com.rscja.deviceapi.exception.ConfigurationException
 
-object DeviceApi {
+object MyRFIDDeviceApi {
     private var reader: RFIDWithUHFUART? = null
 
     // Inisialisasi RFID
