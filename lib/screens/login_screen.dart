@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset("lib/assets/images/bg.png", fit: BoxFit.cover),
+          Image.asset('assets/images/bg.png', fit: BoxFit.cover),
           Container(color: Colors.black.withAlpha((0.7 * 255).toInt())),
           Center(
             child: FadeTransition(

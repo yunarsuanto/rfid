@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rfid/services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -45,34 +44,34 @@ class _RegisterScreenState extends State<RegisterScreen>
   }
 
   Future<void> handleRegister() async {
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
+    // setState(() {
+    //   isLoading = true;
+    //   errorMessage = null;
+    // });
 
-    if (passwordController.text != confirmPasswordController.text) {
-      setState(() {
-        errorMessage = "Konfirmasi password tidak cocok.";
-        isLoading = false;
-      });
-      return;
-    }
+    // if (passwordController.text != confirmPasswordController.text) {
+    //   setState(() {
+    //     errorMessage = "Konfirmasi password tidak cocok.";
+    //     isLoading = false;
+    //   });
+    //   return;
+    // }
 
-    final success = await AuthService.register(
-      username: usernameController.text,
-      password: passwordController.text,
-    );
+    // final success = await AuthService.register(
+    //   username: usernameController.text,
+    //   password: passwordController.text,
+    // );
 
-    if (!mounted) return;
+    // if (!mounted) return;
 
-    if (success) {
-      Navigator.pushReplacementNamed(context, '/login');
-    } else {
-      setState(() {
-        errorMessage = "Registrasi gagal. Username mungkin sudah digunakan.";
-        isLoading = false;
-      });
-    }
+    // if (success) {
+    //   Navigator.pushReplacementNamed(context, '/login');
+    // } else {
+    //   setState(() {
+    //     errorMessage = "Registrasi gagal. Username mungkin sudah digunakan.";
+    //     isLoading = false;
+    //   });
+    // }
   }
 
   @override
@@ -81,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset("lib/assets/images/bg.png", fit: BoxFit.cover),
+          Image.asset('assets/images/bg.png', fit: BoxFit.cover),
           Container(color: Colors.black.withAlpha((0.7 * 255).toInt())),
           Center(
             child: FadeTransition(

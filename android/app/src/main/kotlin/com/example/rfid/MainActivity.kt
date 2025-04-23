@@ -11,11 +11,12 @@ import com.example.rfid.MyRFIDDeviceApi
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.example.rfid/deviceapi"
+    // private var reader: RFIDWithUHFUART? = null
+    
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.eample.rfid/deviceapi")
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.example.rfid/deviceapi")
         .setMethodCallHandler { call, result ->
             when (call.method) {
                 "initReader" -> {
@@ -23,12 +24,25 @@ class MainActivity : FlutterActivity() {
                     result.success(ok)
                 }
                 "readTag" -> {
-                    val tag = MyRFIDDeviceApi.readTag()
-                    result.success(tag)
+                    val tagInfo = MyRFIDDeviceApi.readTagInfo()
+                    if (tagInfo != null) {
+                        val data = mapOf(
+                            "epc" to tagInfo.epc,
+                            "rssi" to tagInfo.rssi
+                        )
+                        result.success(data)
+                    } else {
+                        result.success(null)
+                    }
                 }
                 "freeReader" -> {
                     val ok = MyRFIDDeviceApi.freeReader()
                     result.success(ok)
+                }
+                "setPower" -> {
+                    val level = call.arguments as? Int ?: 30 // default max
+                    val success = MyRFIDDeviceApi?.setPower(level) ?: false
+                    result.success(success)
                 }
                 else -> result.notImplemented()
             }
