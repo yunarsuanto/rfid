@@ -82,7 +82,12 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.security, size: 80, color: Colors.white),
+                    Image.asset(
+                      'assets/images/logo-sia-outline.png',
+                      width: 220,
+                      height: 100,
+                    ),
+                    // Icon(Icons.security, size: 80, color: Colors.white),
                     const SizedBox(height: 16),
                     Text(
                       "Login RFID",

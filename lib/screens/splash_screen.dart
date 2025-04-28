@@ -7,12 +7,12 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(254, 201, 40, 1),
+      backgroundColor: const Color.fromRGBO(254, 201, 40, 1),
       body: Stack(
         fit: StackFit.expand,
         children: [
           Image.asset('assets/images/bg.png', fit: BoxFit.cover),
-          Container(color: Colors.black.withAlpha((0.7 * 255).toInt())),
+          Container(color: Colors.black.withOpacity(0.7)),
           SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -25,83 +25,70 @@ class SplashScreen extends StatelessWidget {
                     constraints: BoxConstraints(
                       minHeight: constraints.maxHeight,
                     ),
-                    child: IntrinsicHeight(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(height: 20),
+                          // LOGO + TEXT
                           Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.mobile_friendly,
-                                size: 120,
-                                color: Colors.orange,
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Layer Outline
+                                  Image.asset(
+                                    'assets/images/logo-sia-outline.png',
+                                    width: 220,
+                                    height: 220,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 40),
+                              const SizedBox(height: 32),
                               const Text(
-                                "RFID",
+                                "RFID App",
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 24),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.orange,
-                                    foregroundColor: Colors.black87,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 14,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => const LoginScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text("Login"),
+
+                          const SizedBox(height: 48),
+
+                          // TOMBOL LOGIN
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginScreen(),
                                 ),
-                                // const SizedBox(height: 12),
-                                // OutlinedButton(
-                                //   style: OutlinedButton.styleFrom(
-                                //     foregroundColor: Colors.white,
-                                //     side: const BorderSide(
-                                //       color: Colors.white,
-                                //       width: 2,
-                                //     ),
-                                //     padding: const EdgeInsets.symmetric(
-                                //       vertical: 14,
-                                //     ),
-                                //     shape: RoundedRectangleBorder(
-                                //       borderRadius: BorderRadius.circular(12),
-                                //     ),
-                                //   ),
-                                //   onPressed: () {
-                                //     Navigator.push(
-                                //       context,
-                                //       MaterialPageRoute(
-                                //         builder: (_) => const RegisterScreen(),
-                                //       ),
-                                //     );
-                                //   },
-                                //   child: const Text("Register"),
-                                // ),
-                              ],
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 40,
+                                vertical: 14,
+                              ),
+                            ),
+                            child: const Text(
+                              "Login",
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                         ],

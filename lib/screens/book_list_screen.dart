@@ -34,8 +34,34 @@ class _BookListScreenState extends State<BookListScreen> {
   bool _isReading = false;
   bool _lockedToTag = false;
 
-  void _startScanning({List<Item> tags = const []}) {
-    final validTags = tags.map((tag) => tag.rfidCode).toList();
+  Future<void> _startScanning({List<Item> tags = const []}) async {
+    final validTags =
+        tags
+            .where((tag) => tag.availability == 'Tersedia')
+            .map((tag) => tag.rfidCode)
+            .toList();
+
+    if (validTags.isEmpty) {
+      setState(() {
+        selectedBook = null;
+      });
+
+      await showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Info'),
+              content: const Text('Buku yang tersedia tidak ada.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+      );
+      return; // ⬅️ STOP di sini, tidak lanjut ke bawah
+    }
 
     _signalStrength = 0.0;
     _scanTimer = Timer.periodic(const Duration(milliseconds: 200), (_) async {
@@ -44,7 +70,7 @@ class _BookListScreenState extends State<BookListScreen> {
 
       final tagData = await RFIDScanner.readTag();
 
-      if (tagData != null && validTags != null) {
+      if (tagData != null) {
         final epc = tagData['epc']?.toString().trim().toUpperCase();
         final rssi = double.tryParse(tagData['rssi'].toString()) ?? -100;
 
@@ -79,7 +105,7 @@ class _BookListScreenState extends State<BookListScreen> {
           _isBeeping = false;
           _currentRssi = -100;
           detectedTag = null;
-          _lockedToTag = false; // 🔓 Siap cari lagi
+          _lockedToTag = false;
         }
       }
 
@@ -217,121 +243,6 @@ class _BookListScreenState extends State<BookListScreen> {
             child: selectedBook == null ? _buildBookList() : _buildScanView(),
           ),
         ],
-        // children: [
-        //   Image.asset('assets/images/bg.png', fit: BoxFit.cover),
-        //   Container(color: Colors.black.withAlpha((0.7 * 255).toInt())),
-        //   Column(
-        //     children: [
-        //       const SizedBox(height: kToolbarHeight + 24),
-        //       Padding(
-        //         padding: const EdgeInsets.all(12),
-        //         child: TextField(
-        //           controller: searchController,
-        //           style: const TextStyle(color: Colors.white),
-        //           decoration: InputDecoration(
-        //             hintText: 'Cari judul atau penulis...',
-        //             hintStyle: const TextStyle(color: Colors.white70),
-        //             filled: true,
-        //             fillColor: Colors.white.withAlpha((0.1 * 255).toInt()),
-        //             prefixIcon: const Icon(Icons.search, color: Colors.white),
-        //             border: OutlineInputBorder(
-        //               borderRadius: BorderRadius.circular(12),
-        //               borderSide: BorderSide.none,
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //       Expanded(
-        //         child:
-        //             filteredBooks.isEmpty
-        //                 ? const Center(
-        //                   child: Text(
-        //                     'Tidak ada buku ditemukan',
-        //                     style: TextStyle(color: Colors.white),
-        //                   ),
-        //                 )
-        //                 : ListView.builder(
-        //                   itemCount: filteredBooks.length,
-        //                   padding: const EdgeInsets.symmetric(horizontal: 12),
-        //                   itemBuilder: (context, index) {
-        //                     final book = filteredBooks[index];
-        //                     return Card(
-        //                       color: Colors.white.withAlpha(
-        //                         (0.2 * 255).toInt(),
-        //                       ),
-        //                       shape: RoundedRectangleBorder(
-        //                         borderRadius: BorderRadius.circular(16),
-        //                       ),
-        //                       margin: const EdgeInsets.symmetric(vertical: 8),
-        //                       child: ListTile(
-        //                         onTap: () async {
-        //                           if (book.items.isNotEmpty) {
-        //                             await RFIDScanner.initReader();
-        //                             await RFIDScanner.setPower(30);
-        //                             // final powerOk = await RFIDScanner.setPower(
-        //                             //   30,
-        //                             // );
-        //                             setState(() {
-        //                               selectedBook = book.title;
-        //                               detectedTag = null;
-        //                             });
-        //                             _startScanning(tags: book.items);
-        //                           } else {
-        //                             showDialog(
-        //                               context: context,
-        //                               builder:
-        //                                   (_) => AlertDialog(
-        //                                     title: const Text(
-        //                                       'RFID Belum Tersedia',
-        //                                     ),
-        //                                     content: const Text(
-        //                                       'Buku ini belum memiliki data RFID yang terdaftar.',
-        //                                     ),
-        //                                     actions: [
-        //                                       TextButton(
-        //                                         onPressed:
-        //                                             () =>
-        //                                                 Navigator.pop(context),
-        //                                         child: const Text('OK'),
-        //                                       ),
-        //                                     ],
-        //                                   ),
-        //                             );
-        //                           }
-        //                         },
-        //                         contentPadding: const EdgeInsets.all(12),
-        //                         leading:
-        //                             book.imageUrl.isNotEmpty
-        //                                 ? Image.network(
-        //                                   book.imageUrl,
-        //                                   height: 120,
-        //                                   width: 80,
-        //                                   fit: BoxFit.cover,
-        //                                 )
-        //                                 : const Icon(
-        //                                   Icons.book,
-        //                                   color: Colors.white,
-        //                                 ),
-        //                         title: Text(
-        //                           book.title,
-        //                           style: const TextStyle(color: Colors.white),
-        //                         ),
-        //                         subtitle: Text(
-        //                           book.publisher,
-        //                           style: TextStyle(
-        //                             color: Colors.white.withAlpha(
-        //                               (0.8 * 255).toInt(),
-        //                             ),
-        //                           ),
-        //                         ),
-        //                       ),
-        //                     );
-        //                   },
-        //                 ),
-        //       ),
-        //     ],
-        //   ),
-        // ],
       ),
     );
   }

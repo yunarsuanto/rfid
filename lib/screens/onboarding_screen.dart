@@ -36,11 +36,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         fit: StackFit.expand,
         children: [
           Image.asset('assets/images/bg.png', fit: BoxFit.cover),
-          Container(color: Colors.black.withOpacity(0.7)),
+          Container(color: Colors.black.withAlpha((0.7 * 255).toInt())),
           SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 24,
+                  ),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       minHeight: constraints.maxHeight,
@@ -53,8 +57,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       child: Column(
                         children: [
                           SizedBox(
-                            height:
-                                400, // tetap berikan tinggi PageView agar tidak overexpand
+                            height: 400,
                             child: PageView.builder(
                               controller: _controller,
                               onPageChanged:
@@ -65,10 +68,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(
-                                      Icons.mobile_friendly,
-                                      size: 100,
-                                      color: Colors.orange,
+                                    Image.asset(
+                                      'assets/images/logo-sia-outline.png',
+                                      width: 200,
+                                      height: 200,
                                     ),
                                     const SizedBox(height: 32),
                                     Text(
