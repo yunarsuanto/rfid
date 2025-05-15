@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:rfid/config/api.dart';
-import 'package:rfid/models/book.dart';
-import 'package:rfid/services/unauthorize.dart';
+import 'package:elibrary/config/api.dart';
+import 'package:elibrary/models/book.dart';
+import 'package:elibrary/services/unauthorize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookService {
@@ -31,13 +31,6 @@ class BookService {
         'Authorization': 'Bearer $token',
       },
     );
-    print('---- REQUEST');
-    print('URL: $url');
-    print('Headers: ${response.request?.headers}');
-    print('---- RESPONSE');
-    print('Status Code: ${response.statusCode}');
-    print('Body: ${response.body.length}');
-    print('---- END RESPONSE');
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
       List<Book> books =

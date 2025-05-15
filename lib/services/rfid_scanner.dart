@@ -5,6 +5,7 @@ class RFIDScanner {
   static const MethodChannel _channel = MethodChannel(
     'com.example.rfid/deviceapi',
   );
+  static const _eventChannel = EventChannel('com.example.rfid/scan_stream');
 
   static Future<void> initReader() async {
     try {
@@ -32,5 +33,11 @@ class RFIDScanner {
     final result = await _channel.invokeMethod('setPower', {'level': power});
     print("📡 Set power result: $result");
     return result == true;
+  }
+
+  static Stream<Map<String, dynamic>> get inventoryStream {
+    return _eventChannel.receiveBroadcastStream().map((event) {
+      return Map<String, dynamic>.from(event);
+    });
   }
 }

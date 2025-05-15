@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:rfid/screens/book_list_screen.dart';
-import 'package:rfid/screens/scan_screen.dart';
+import 'package:elibrary/screens/book_list_screen.dart';
+import 'package:elibrary/screens/stockopname.dart';
 import '../services/auth_service.dart';
 
 final List<Map<String, dynamic>> menus = [
   {'title': 'Daftar Buku', 'icon': Icons.book},
-  {'title': 'Scan', 'icon': Icons.qr_code_scanner},
-  {'title': 'History', 'icon': Icons.history},
-  {'title': 'Pengaturan', 'icon': Icons.settings},
+  {'title': 'Stockopname', 'icon': Icons.qr_code_scanner},
+  // {'title': 'History', 'icon': Icons.history},
+  // {'title': 'Pengaturan', 'icon': Icons.settings},
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -123,10 +123,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         );
                         break;
-                      case 'Scan':
+                      case 'Stockopname':
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const ScanScreen()),
+                          MaterialPageRoute(
+                            builder: (_) => const Stockopname(),
+                          ),
                         );
                         break;
                       case 'History':

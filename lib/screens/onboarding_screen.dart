@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rfid/screens/splash_screen.dart';
+import 'package:elibrary/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void finishOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('seenOnboarding', false);
+    await prefs.setBool('seenOnboarding', true);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const SplashScreen()),

@@ -3,12 +3,17 @@ package com.example.rfid
 import android.content.Context
 import android.util.Log
 import com.rscja.deviceapi.RFIDWithUHFUART
+import com.rscja.deviceapi.RFIDWithUHFUART
 import com.rscja.deviceapi.entity.UHFTAGInfo
 import com.rscja.deviceapi.exception.ConfigurationException
 import com.rscja.deviceapi.interfaces.ISingleAntenna
 
 object MyRFIDDeviceApi {
     private var reader: RFIDWithUHFUART? = null
+    private var isScanning = false
+    private var onTagScanned: ((UHFTAGInfo) -> Unit)? = null
+    private var scanThread: Thread? = null
+
 
     // Inisialisasi RFID
     fun initReader(context: Context): Boolean {
@@ -91,5 +96,40 @@ object MyRFIDDeviceApi {
             null
         }
     }    
+
+    fun startInventory(callback: (UHFTAGInfo) -> Unit) {
+        if (reader == null || isScanning) return
+    
+        val started = reader?.startInventoryTag() ?: false
+        if (!started) {
+            Log.e("RFID", "❌ Gagal start inventory dari device.")
+            return
+        }
+    
+        isScanning = true
+        scanThread = Thread {
+            while (isScanning) {
+                try {
+                    val tag = reader?.readTagFromBuffer()  // ← Ini ganti sesuai SDK kamu
+                    if (tag != null) {
+                        callback(tag)
+                    }
+                    Thread.sleep(100)
+                } catch (e: Exception) {
+                    Log.e("DeviceApi", "Inventory error: ${e.message}")
+                }
+            }
+        }
+        scanThread?.start()
+        Log.d("RFID", "▶️ Start inventory loop")
+    }
+    
+    fun stopInventory() {
+        isScanning = false
+        scanThread?.interrupt()
+        scanThread = null
+        reader?.stopInventory() // <- ini sudah tepat
+        Log.d("RFID", "⏹️ Stop inventory loop")
+    } 
     
 }

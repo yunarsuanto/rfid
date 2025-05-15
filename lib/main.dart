@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:rfid/config/http_overrides.dart';
-import 'package:rfid/screens/home_screen.dart';
-import 'package:rfid/screens/login_screen.dart';
-import 'package:rfid/screens/onboarding_screen.dart';
-import 'package:rfid/screens/register_screen.dart';
+import 'package:elibrary/config/http_overrides.dart';
+import 'package:elibrary/screens/home_screen.dart';
+import 'package:elibrary/screens/login_screen.dart';
+import 'package:elibrary/screens/onboarding_screen.dart';
+import 'package:elibrary/screens/register_screen.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
