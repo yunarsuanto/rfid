@@ -7,7 +7,8 @@ import 'package:rfid/screens/login_screen.dart';
 import 'package:rfid/screens/onboarding_screen.dart';
 import 'package:rfid/screens/register_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }

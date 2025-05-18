@@ -1,28 +1,23 @@
 import 'dart:convert';
+import 'package:rfid/models/book_detail.dart';
 import 'package:http/http.dart' as http;
 import 'package:rfid/config/api.dart';
-import 'package:rfid/models/book.dart';
+import 'package:rfid/models/shelf.dart';
 import 'package:rfid/services/unauthorize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class BookService {
+class DetailStockopnameService {
   // URL dasar tanpa query parameter
   final Uri baseUrl = Uri.parse(
-    '${Api.baseUrl}/api/v1/general/GeneralBiblioHandler/GetList',
+    '${Api.baseUrl}/api/v1/general/GeneralBiblioHandler/GetDetail',
   );
 
   // Fungsi untuk mengambil data buku dari API
-  Future<List<Book>> fetchBooks({
-    String search = '',
-    int limit = 20,
-    int page = 1,
-  }) async {
+  Future<BookDetail> fetchDetailStockopnames({String rfid_tag = ''}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
-    final Uri url = baseUrl.replace(
-      queryParameters: {'limit': '$limit', 'page': '$page', 'search': search},
-    );
+    final Uri url = baseUrl.replace(queryParameters: {'rfid_tag': rfid_tag});
 
     final response = await http.get(
       url,
@@ -32,16 +27,18 @@ class BookService {
       },
     );
     if (response.statusCode == 200) {
-      Map<String, dynamic> data = json.decode(response.body);
-      List<Book> books =
-          (data['data'] as List)
-              .map((bookData) => Book.fromJson(bookData))
-              .toList();
-      return books;
+      final data = json.decode(response.body);
+
+      final Map<String, dynamic> bookData = data['data'];
+      if (bookData.isNotEmpty) {
+        return BookDetail.fromJson(bookData);
+      } else {
+        throw Exception('Data kosong');
+      }
     } else if (response.statusCode == 401) {
-      throw UnauthorizedException(); // lempar exception khusus
+      throw UnauthorizedException();
     } else {
-      throw Exception('Failed to load books');
+      throw Exception('Failed to load book detail');
     }
   }
 }

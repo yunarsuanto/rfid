@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,22 +11,35 @@ class AuthService {
   }) async {
     final url = Uri.parse('${Api.baseUrl}/api/v1/GeneralAuthHandler/Login');
 
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'username': username, 'password': password}),
-    );
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'username': username, 'password': password}),
+          )
+          .timeout(const Duration(seconds: 10)); // ⏱️ Set timeout
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      // final token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDUxNTE5MjksImp0aSI6IjEiLCJpYXQiOjE3NDUxNDQ3MjksImlzcyI6InB1cHItZS1jYW1wdXMiLCJJZCI6IjEiLCJVc2VybmFtZSI6IiIsIkRldmljZSI6InB1LWxpYnJhcnktYXV0aC1hY2Nlc3MtdG9rZW4iLCJVbmlxdWVLZXkiOiJrVm53cUwiLCJTc29Db2RlIjoiIn0.sb2-OEXpfrstLO4P-VBaSlgv0lggI3E13y9s7KedbP8";
-      final token = data['data']['access_token'];
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['data']['access_token'];
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token);
-      return true;
-    } else {
-      return false;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
+        return true;
+      } else {
+        // Misal salah password atau unauthorized
+        throw Exception("Login gagal: ${response.statusCode}");
+      }
+    } on http.ClientException catch (_) {
+      // Jika masalah di client (no internet, DNS)
+      throw Exception("Tidak ada koneksi internet.");
+    } on TimeoutException catch (_) {
+      // Jika melebihi batas waktu
+      throw Exception("Permintaan login terlalu lama (timeout).");
+    } catch (e) {
+      // Error lainnya
+      throw Exception("Terjadi kesalahan: $e");
     }
   }
 

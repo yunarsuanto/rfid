@@ -21,7 +21,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void finishOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('seenOnboarding', false);
+    await prefs.setBool('seenOnboarding', true);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const SplashScreen()),

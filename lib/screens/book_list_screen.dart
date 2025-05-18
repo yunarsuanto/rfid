@@ -39,13 +39,13 @@ class _BookListScreenState extends State<BookListScreen> {
         tags
             .where((tag) => tag.availability == 'Tersedia')
             .map((tag) => tag.rfidCode)
+            // .map((tag) => tag.rfidCode.substring(0, 9))
             .toList();
 
     if (validTags.isEmpty) {
       setState(() {
         selectedBook = null;
       });
-
       await showDialog(
         context: context,
         builder:
@@ -69,6 +69,7 @@ class _BookListScreenState extends State<BookListScreen> {
       _isReading = true;
 
       final tagData = await RFIDScanner.readTag();
+      final now = DateTime.now();
 
       if (tagData != null) {
         final epc = tagData['epc']?.toString().trim().toUpperCase();
@@ -88,7 +89,7 @@ class _BookListScreenState extends State<BookListScreen> {
             });
           }
 
-          lastTagTime = DateTime.now();
+          lastTagTime = now;
 
           if (!_isBeeping) {
             _isBeeping = true;
@@ -97,16 +98,23 @@ class _BookListScreenState extends State<BookListScreen> {
 
           _adjustBeepVolume(rssi);
         }
+      } else {
+        if (lastTagTime != null &&
+            now.difference(lastTagTime!).inMilliseconds > 1000) {
+          if (_signalStrength != 0.0) {
+            setState(() {
+              _signalStrength = 0.0; // Reset ke 0%
+            });
+          }
+        }
       }
 
-      if (_isBeeping && lastTagTime != null) {
-        final diff = DateTime.now().difference(lastTagTime!);
-        if (diff.inMilliseconds > 2000) {
-          _isBeeping = false;
-          _currentRssi = -100;
-          detectedTag = null;
-          _lockedToTag = false;
-        }
+      if (lastTagTime != null &&
+          now.difference(lastTagTime!).inMilliseconds > 2000) {
+        _isBeeping = false;
+        _currentRssi = -100;
+        detectedTag = null;
+        _lockedToTag = false;
       }
 
       _isReading = false;
@@ -334,7 +342,7 @@ class _BookListScreenState extends State<BookListScreen> {
                             style: const TextStyle(color: Colors.white),
                           ),
                           subtitle: Text(
-                            book.publisher,
+                            book.publisher + "( ${book.callNumber} )",
                             style: TextStyle(
                               color: Colors.white.withAlpha(
                                 (0.8 * 255).toInt(),

@@ -47,19 +47,39 @@ class _LoginScreenState extends State<LoginScreen>
       errorMessage = null;
     });
 
-    final success = await AuthService.login(
-      username: usernameController.text,
-      password: passwordController.text,
-    );
+    try {
+      final success = await AuthService.login(
+        username: usernameController.text,
+        password: passwordController.text,
+      );
 
-    if (!mounted) return;
-    if (success) {
-      Navigator.pushReplacementNamed(context, '/home');
-    } else {
+      if (!mounted) return;
+      if (success) {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        setState(() {
+          errorMessage = "Login gagal. Periksa kembali username dan password.";
+          isLoading = false;
+        });
+      }
+    } catch (e) {
       setState(() {
-        errorMessage = "Login gagal. Periksa kembali username dan password.";
         isLoading = false;
       });
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: Text('Login Gagal'),
+              content: Text(e.toString().replaceAll('Exception: ', '')),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+      );
     }
   }
 
